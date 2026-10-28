@@ -1,0 +1,14 @@
+.resourceCard.card {
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  color: var(--navy);
+  box-shadow: 0 2px 8px rgba(4, 24, 57, 0.06);
+  cursor: pointer;
+}
+.resourceCardImage { width: 100%; height: 120px; object-fit: cover; display: block; background: var(--border); }
+.resourceCardBody.card-body { padding: 10px; }
+.resourceCard .name { font-size: 13px; font-weight: 500; margin: 0 0 6px; }
+.resourceCard .price { font-size: 13px; font-weight: 700; color: var(--blue); margin: 0 0 4px; }
+.resourceCard .likes { font-size: 11px; color: var(--muted); }

@@ -1,0 +1,41 @@
+/* Палитра Aeroflot и базовые стили из ЛР1 */
+
+:root {
+  --navy: #041839;
+  --blue: #10349E;
+  --blue-dark: #0B2777;
+  --orange: #EF8A06;
+  --bg: #F2F3F5;
+  --border: #E1E3E7;
+  --muted: #364661;
+  --disabled: #AAB0BC;
+  --white: #FFFFFF;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Golos Text", "Inter", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Кнопки и слайдер Bootstrap — в синий цвет палитры вместо стандартного */
+.btn-primary {
+  --bs-btn-bg: var(--blue);
+  --bs-btn-border-color: var(--blue);
+  --bs-btn-hover-bg: var(--blue-dark);
+  --bs-btn-hover-border-color: var(--blue-dark);
+  --bs-btn-active-bg: var(--blue-dark);
+  --bs-btn-active-border-color: var(--blue-dark);
+  --bs-btn-disabled-bg: var(--blue);
+  --bs-btn-disabled-border-color: var(--blue);
+  --bs-btn-focus-shadow-rgb: 16, 52, 158;
+}
+
+.form-range::-webkit-slider-thumb { background-color: var(--blue); }
+.form-range::-moz-range-thumb { background-color: var(--blue); }
+.form-range:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--white), 0 0 0 0.25rem rgba(16, 52, 158, 0.25); }
+.form-range:focus::-moz-range-thumb { box-shadow: 0 0 0 1px var(--white), 0 0 0 0.25rem rgba(16, 52, 158, 0.25); }

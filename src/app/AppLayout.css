@@ -1,0 +1,12 @@
+/* Колонка под экран телефона (390px) по центру окна */
+.appShell {
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--white);
+  box-shadow: 0 0 24px rgba(4, 24, 57, 0.08);
+}
+
+.appContent {
+  min-height: 100vh;
+}
