@@ -11,5 +11,10 @@ export default defineConfig({
     host: true, // нужно, чтобы правильно работал маппинг портов в docker-контейнере
     strictPort: true,
     port: 3000,
+    // обратный прокси: браузер ходит только на :3000, поэтому ограничений CORS нет
+    proxy: {
+      '/api': 'http://localhost:8080', // бэкенд flight-service-api
+      '/flight-media': 'http://localhost:9100', // изображения и видео из MinIO (S3)
+    },
   },
 })

@@ -10,3 +10,26 @@
 .appContent {
   min-height: 100vh;
 }
+
+/* Анимация загрузки: перекрывает всё приложение, включая меню, и блокирует нажатия */
+.loadingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--blue);
+}
+
+.appError.alert {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  z-index: 2100;
+  width: calc(100% - 16px);
+  max-width: 374px;
+  transform: translateX(-50%);
+  font-size: 14px;
+}

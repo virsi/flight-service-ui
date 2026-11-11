@@ -1,41 +1,35 @@
 import './FlightResourcesPage.css'
-import { type FC, useEffect, useState } from 'react'
-import { Col, Row, Spinner } from 'react-bootstrap'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { type FlightResource, type FlightResourcesOutletContext, FlightResourceCard, getFlightResources } from '../../entities/FlightResource'
+import { type FC, useEffect } from 'react'
+import { Col, Row } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../../app/store'
+import {
+  type FlightResource,
+  FlightResourceCard,
+  deleteFlightResource,
+  getFlightResourcesList,
+  setPriceFilter,
+} from '../../entities/FlightResource'
 import { PriceFilter } from '../../features/PriceFilter/PriceFilter'
 import { ROUTES } from '../../shared/config/routes'
 
 // Плитка: фильтр «Цена до» и карточки услуг в 2 столбца
 export const FlightResourcesPage: FC = () => {
-  const { flightResources, setFlightResources, priceFilter, setPriceFilter } = useOutletContext<FlightResourcesOutletContext>()
-  // price — текущее значение слайдера, priceFilter (в AppLayout) — применённый по «Найти» фильтр,
-  // он сохраняется при переходе на ленту и обратно
-  const [price, setPrice] = useState(priceFilter)
-  const [loading, setLoading] = useState(false)
-  // начальное значение — уже загруженный общий список, чтобы при возврате с ленты не мигал спиннер
-  const [list, setList] = useState<FlightResource[]>(flightResources)
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const { list, priceFilter, loading } = useAppSelector((state) => state.flightResources)
+  const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated)
 
-  // загрузка при открытии страницы и после каждого «Найти» (меняется priceFilter);
-  // список кладём и в локальное состояние (отрисовка), и в общий (порядок для «Далее» в ленте)
+  // удалять можно только свои услуги (is_mine = 1 приходит с токеном)
+  const getDeleteHandler = (item: FlightResource) => {
+    if (!isAuthenticated || item.is_mine !== 1) return undefined
+    return () => dispatch(deleteFlightResource(item.id))
+  }
+
+  // загрузка при открытии страницы и при входе / выходе (меняется is_mine у услуг)
   useEffect(() => {
-    getFlightResources(priceFilter).then((items) => {
-      setList(items)
-      setFlightResources(items)
-      setLoading(false)
-    })
-  }, [priceFilter, setFlightResources])
-
-  const handleSearch = () => {
-    if (price === priceFilter) return // фильтр не изменился — список уже актуален
-    setLoading(true)
-    setPriceFilter(price)
-  }
-
-  const handleCardClick = (id: number) => {
-    navigate(`${ROUTES.FEED}/${id}`)
-  }
+    dispatch(getFlightResourcesList())
+  }, [dispatch, isAuthenticated])
 
   return (
     <div className="tilesPage">
@@ -45,29 +39,27 @@ export const FlightResourcesPage: FC = () => {
       </header>
 
       <PriceFilter
-        value={price}
-        setValue={setPrice}
-        onSubmit={handleSearch}
+        value={priceFilter}
+        setValue={(value) => dispatch(setPriceFilter(value))}
+        onSubmit={() => dispatch(getFlightResourcesList())}
         loading={loading}
       />
 
-      {loading && (
-        <div className="loadingBg">
-          <Spinner animation="border" />
-        </div>
+      {!list.length && !loading ? (
+        <p className="empty">К сожалению, ничего не найдено</p>
+      ) : (
+        <Row className="grid g-3">
+          {list.map((item) => (
+            <Col xs={6} key={item.id}>
+              <FlightResourceCard
+                {...item}
+                onClick={() => navigate(`${ROUTES.FEED}/${item.id}`)}
+                onDelete={getDeleteHandler(item)}
+              />
+            </Col>
+          ))}
+        </Row>
       )}
-      {!loading &&
-        (!list.length ? (
-          <p className="empty">К сожалению, ничего не найдено</p>
-        ) : (
-          <Row className="grid g-3">
-            {list.map((item) => (
-              <Col xs={6} key={item.id}>
-                <FlightResourceCard {...item} onClick={() => handleCardClick(item.id)} />
-              </Col>
-            ))}
-          </Row>
-        ))}
     </div>
   )
 }

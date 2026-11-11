@@ -14,12 +14,3 @@ export interface FlightResource {
   is_liked: number // 1 — текущий пользователь лайкнул услугу (в ленте)
 }
 
-// Общие данные страниц: текущий список услуг (порядок для «Далее» и вкладки «Лента»)
-// и значение фильтра цены, чтобы оно не сбрасывалось при переходе между страницами.
-// Передаются через Outlet context React Router — это не React Context.
-export interface FlightResourcesOutletContext {
-  flightResources: FlightResource[]
-  setFlightResources: (flightResources: FlightResource[]) => void
-  priceFilter: number
-  setPriceFilter: (price: number) => void
-}

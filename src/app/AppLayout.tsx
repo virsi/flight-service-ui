@@ -1,20 +1,37 @@
-import { type FC, useState } from 'react'
+import { type FC } from 'react'
+import { Alert, Spinner } from 'react-bootstrap'
 import { Outlet } from 'react-router-dom'
-import { FLIGHT_RESOURCES_MOCK, type FlightResource } from '../entities/FlightResource'
+import { clearError } from '../entities/FlightResource'
 import { TabBar } from '../widgets/TabBar/TabBar'
+import { useAppDispatch, useAppSelector } from './store'
 import './AppLayout.css'
 
 export const AppLayout: FC = () => {
-  // в mock только опубликованные услуги — сразу кладём их в список, чтобы прямой заход на /feed/:id работал
-  const [flightResources, setFlightResources] = useState<FlightResource[]>(FLIGHT_RESOURCES_MOCK)
-  const [priceFilter, setPriceFilter] = useState(20000)
+  const dispatch = useAppDispatch()
+  const { loading, error } = useAppSelector((state) => state.flightResources)
 
   return (
     <div className="appShell">
+      {error && (
+        <Alert
+          className="appError"
+          variant="danger"
+          dismissible
+          onClose={() => dispatch(clearError())}
+        >
+          {error}
+        </Alert>
+      )}
       <main className="appContent">
-        <Outlet context={{ flightResources, setFlightResources, priceFilter, setPriceFilter }} />
+        <Outlet />
       </main>
-      <TabBar flightResources={flightResources} />
+      <TabBar />
+      {/* пока идёт запрос — анимация поверх страницы, кнопки под ней недоступны */}
+      {loading && (
+        <div className="loadingOverlay">
+          <Spinner animation="border" />
+        </div>
+      )}
     </div>
   )
 }

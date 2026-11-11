@@ -12,3 +12,9 @@
 .resourceCard .name { font-size: 13px; font-weight: 500; margin: 0 0 6px; }
 .resourceCard .price { font-size: 13px; font-weight: 700; color: var(--blue); margin: 0 0 4px; }
 .resourceCard .likes { font-size: 11px; color: var(--muted); }
+.resourceCard .btn-delete {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  font-size: 12px;
+}

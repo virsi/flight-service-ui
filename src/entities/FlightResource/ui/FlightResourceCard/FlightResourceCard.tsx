@@ -1,6 +1,6 @@
 import './FlightResourceCard.css'
 import type { FC } from 'react'
-import { Card } from 'react-bootstrap'
+import { Button, Card } from 'react-bootstrap'
 import { DEFAULT_IMAGE } from '../../../../shared/config/media'
 
 interface Props {
@@ -10,9 +10,18 @@ interface Props {
   image_url: string
   likes_count: number
   onClick: () => void
+  onDelete?: () => void // есть только у своих услуг авторизованного пользователя
 }
 
-export const FlightResourceCard: FC<Props> = ({ name, price, unit, image_url, likes_count, onClick }) => (
+export const FlightResourceCard: FC<Props> = ({
+  name,
+  price,
+  unit,
+  image_url,
+  likes_count,
+  onClick,
+  onDelete,
+}) => (
   <Card className="resourceCard" onClick={onClick}>
     <Card.Img
       className="resourceCardImage"
@@ -32,6 +41,19 @@ export const FlightResourceCard: FC<Props> = ({ name, price, unit, image_url, li
         {price} ₽/{unit}
       </p>
       <span className="likes">♥ {likes_count}</span>
+      {onDelete && (
+        <Button
+          className="btn-delete"
+          variant="outline-danger"
+          size="sm"
+          onClick={(event) => {
+            event.stopPropagation() // не открывать ленту
+            onDelete()
+          }}
+        >
+          Удалить
+        </Button>
+      )}
     </Card.Body>
   </Card>
 )
