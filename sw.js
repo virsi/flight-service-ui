@@ -1,6 +1,6 @@
 
-const cacheName = 'flight-ui-4b22b0efdafe238b'
-const files = ["./DefaultImage.jpg","./DefaultVideo.mp4","./assets/index-C4i2T-cr.css","./assets/index-D0GHjG2N.js","./favicon.svg","./icon-192.png","./icon-512.png","./index.html","./manifest.webmanifest","./mock/catering.jpg","./mock/catering.mp4","./mock/gpu.jpg","./mock/gpu.mp4","./mock/jet-fuel.jpg","./mock/jet-fuel.mp4","./mock/tug.jpg","./mock/tug.mp4"]
+const cacheName = 'flight-ui-39a8b3820b51904d'
+const files = ["./DefaultImage.jpg","./DefaultVideo.mp4","./assets/index-BONKxPkp.js","./assets/index-Cf1tn3JQ.css","./favicon.svg","./icon-192.png","./icon-512.png","./index.html","./manifest.webmanifest","./mock/catering.jpg","./mock/catering.mp4","./mock/gpu.jpg","./mock/gpu.mp4","./mock/jet-fuel.jpg","./mock/jet-fuel.mp4","./mock/tug.jpg","./mock/tug.mp4"]
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(files)))
 })
