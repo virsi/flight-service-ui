@@ -11,12 +11,14 @@ await writeFile('dist/sw.js', `
 const cacheName = 'flight-ui-${hash.digest('hex').slice(0, 16)}'
 const files = ${JSON.stringify(files.map(file => '.' + file))}
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(files)))
+  event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(
+    files.map(file => new Request(file, { cache: 'reload' }))
+  )).then(() => self.skipWaiting()))
 })
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys
     .filter(key => key.startsWith('flight-ui-') && key !== cacheName)
-    .map(key => caches.delete(key)))))
+    .map(key => caches.delete(key)))).then(() => self.clients.claim()))
 })
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.registration.scope)) return
