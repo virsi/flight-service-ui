@@ -9,3 +9,7 @@
   object-fit: cover;
   background: var(--border);
 }
+@media (min-width: 768px) {
+  .addPage { max-width: 640px; margin: auto; }
+  .addPreview { height: 260px; }
+}

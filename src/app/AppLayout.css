@@ -1,6 +1,6 @@
-/* Колонка под экран телефона (390px) по центру окна */
+/* Колонка под экран телефона (1200px) по центру окна */
 .appShell {
-  max-width: 390px;
+  max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
   background: var(--white);

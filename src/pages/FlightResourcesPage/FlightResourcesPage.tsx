@@ -50,7 +50,7 @@ export const FlightResourcesPage: FC = () => {
       ) : (
         <Row className="grid g-3">
           {list.map((item) => (
-            <Col xs={6} key={item.id}>
+            <Col xs={6} md={4} lg={3} key={item.id}>
               <FlightResourceCard
                 {...item}
                 onClick={() => navigate(`${ROUTES.FEED}/${item.id}`)}

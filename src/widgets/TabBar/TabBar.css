@@ -1,10 +1,10 @@
-/* Нижняя панель вкладок как в ЛР1: 390px по центру, скругления, тень */
+/* Нижняя панель вкладок как в ЛР1: 1200px по центру, скругления, тень */
 .tabbar.navbar {
   left: 50%;
   right: auto;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 390px;
+  max-width: 1200px;
   height: 64px;
   padding: 0;
   background: var(--white);

@@ -41,6 +41,7 @@ export const FlightResourceCard: FC<Props> = ({
         {price} ₽/{unit}
       </p>
       <span className="likes">♥ {likes_count}</span>
+      <Button size="sm" variant="link" className="d-block p-0">Подробнее</Button>
       {onDelete && (
         <Button
           className="btn-delete"

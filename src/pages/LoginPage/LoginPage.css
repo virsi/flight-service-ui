@@ -1,2 +1,3 @@
 .loginPage { padding-bottom: 80px; }
 .loginForm { padding: 8px 16px; }
+.loginForm { max-width: 480px; margin: auto; }

@@ -71,7 +71,7 @@ export const TabBar: FC = () => {
             <span className="underline" />
           </Nav.Link>
         ) : (
-          <Nav.Link className="tab" active={isLogin} onClick={() => navigate(ROUTES.LOGIN)}>
+          <Nav.Link className="tab" disabled={import.meta.env.MODE === 'pages'} active={isLogin} onClick={() => navigate(ROUTES.LOGIN)}>
             <span className="icon" aria-hidden="true">⇥</span>
             <span className="label">{ROUTE_LABELS.LOGIN}</span>
             <span className="underline" />

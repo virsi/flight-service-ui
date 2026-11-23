@@ -213,3 +213,22 @@ src/
     config/routes.ts                    ROUTES и подписи пунктов меню
     config/media.ts                     DEFAULT_IMAGE, DEFAULT_VIDEO
 ```
+
+## ЛР7. Развёртывание
+
+[Публичная PWA](https://virsi.github.io/flight-service-ui/) работает на mock. Команда
+`npm run build:pages` собирает каталог `dist` для публикации в корне ветки
+`gh-pages`. Service Worker сохраняет оболочку, иконки и медиа после первой загрузки.
+
+Для работы с API запустите стенд flight-service-api, подключите телефон и ноутбук
+к одной сети и выпустите сертификат для текущего IP компьютера:
+
+```sh
+mkdir -p .certs
+mkcert -cert-file .certs/lan.pem -key-file .certs/lan-key.pem localhost 127.0.0.1 "$(ipconfig getifaddr en0)"
+npm run dev:https
+```
+
+Открывайте на телефоне HTTPS-адрес Network из вывода Vite. Для проверки цепочки
+установите на телефон публичный rootCA.pem из каталога `mkcert -CAROOT` и включите
+доверие к нему. При смене IP перевыпустите сертификат и перезапустите Vite.

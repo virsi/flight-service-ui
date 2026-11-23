@@ -1,10 +1,16 @@
+import { readFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === 'pages' ? '/flight-service-ui/' : '/',
   plugins: [react()],
   server: {
+    https: mode === 'lan' ? {
+      cert: readFileSync('.certs/lan.pem'),
+      key: readFileSync('.certs/lan-key.pem'),
+    } : undefined,
     watch: {
       usePolling: true, // нужно для hot-reload при использовании docker
     },
@@ -17,4 +23,4 @@ export default defineConfig({
       '/flight-media': 'http://localhost:9100', // изображения и видео из MinIO (S3)
     },
   },
-})
+}))

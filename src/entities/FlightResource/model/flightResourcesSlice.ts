@@ -52,6 +52,7 @@ export const getFlightResourcesList = createAsyncThunk<FlightResource[], void, T
   'flightResources/getFlightResourcesList',
   async (_, { getState, rejectWithValue }) => {
     const { flightResources, user } = getState()
+    if (import.meta.env.MODE === 'pages') return FLIGHT_RESOURCES_MOCK.filter(item => item.price <= flightResources.priceFilter)
     try {
       const { data } = await api.flightResources.flightResourcesList(
         { price: flightResources.priceFilter },
@@ -71,6 +72,7 @@ export const getFlightResourcesList = createAsyncThunk<FlightResource[], void, T
 export const getFlightResourceFeed = createAsyncThunk<FlightResource | null, number, ThunkConfig>(
   'flightResources/getFlightResourceFeed',
   async (id, { getState, rejectWithValue }) => {
+    if (import.meta.env.MODE === 'pages') return FLIGHT_RESOURCES_MOCK.find(item => item.id === id) ?? null
     const { user } = getState()
     try {
       const { data } = await api.flightResources.flightResourcesFeedList(
