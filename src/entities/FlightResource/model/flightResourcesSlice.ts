@@ -121,26 +121,35 @@ export const deleteFlightResource = createAsyncThunk<number, number, ThunkConfig
 
 export type NewFlightResource = Parameters<typeof api.flightResources.flightResourcesCreate>[0]
 
-// Добавление услуги: GET /api/flight-resources/draft (незавершённое добавление), POST /api/flight-resources
-// (черновик, multipart с файлами), затем PUT /api/flight-resources/draft/publish — услуга видна в плитке
-export const createFlightResource = createAsyncThunk<void, NewFlightResource, ThunkConfig>(
-  'flightResources/createFlightResource',
-  async (newResource, { getState, rejectWithValue }) => {
-    const params = authHeader(getState().user.token)
+export const loadFlightDraft = createAsyncThunk<FlightResource | null, void, ThunkConfig>(
+  'flightResources/loadDraft', async (_, { getState, rejectWithValue }) => {
     try {
-      // черновик мог остаться после неудачной публикации — удаляем его, иначе создание вернёт 409
-      const draft = await api.flightResources
-        .flightResourcesDraftList(params)
-        .then(({ data }) => data.data)
-        .catch((error) => {
-          if (axios.isAxiosError(error) && error.response?.status === 404) return undefined
-          throw error
-        })
-      if (draft?.id) await api.flightResources.flightResourcesDelete(draft.id, params)
-      await api.flightResources.flightResourcesCreate(newResource, params)
-      await api.flightResources.flightResourcesDraftPublishUpdate(params)
+      const { data } = await api.flightResources.flightResourcesDraftList(authHeader(getState().user.token))
+      return data.data as FlightResource
     } catch (error) {
-      return rejectWithValue(errorMessage(error, 'Не удалось добавить услугу'))
+      if (axios.isAxiosError(error) && error.response?.status === 404) return null
+      return rejectWithValue(errorMessage(error, 'Не удалось загрузить черновик'))
+    }
+  },
+)
+
+export const createFlightResource = createAsyncThunk<FlightResource, NewFlightResource, ThunkConfig>(
+  'flightResources/createFlightResource', async (resource, { getState, rejectWithValue }) => {
+    try {
+      const { data } = await api.flightResources.flightResourcesCreate(resource, authHeader(getState().user.token))
+      return data.data as FlightResource
+    } catch (error) {
+      return rejectWithValue(errorMessage(error, 'Не удалось сохранить черновик'))
+    }
+  },
+)
+
+export const publishFlightDraft = createAsyncThunk<void, void, ThunkConfig>(
+  'flightResources/publishDraft', async (_, { getState, rejectWithValue }) => {
+    try {
+      await api.flightResources.flightResourcesDraftPublishUpdate(authHeader(getState().user.token))
+    } catch (error) {
+      return rejectWithValue(errorMessage(error, 'Не удалось опубликовать услугу'))
     }
   },
 )
@@ -151,6 +160,8 @@ const thunks = [
   likeFlightResource,
   deleteFlightResource,
   createFlightResource,
+  loadFlightDraft,
+  publishFlightDraft,
 ] as const
 
 const flightResourcesSlice = createSlice({

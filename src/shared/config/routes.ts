@@ -8,7 +8,7 @@ export type RouteKeyType = keyof typeof ROUTES
 export const ROUTE_LABELS: { [key in RouteKeyType]: string } = {
   TILES: 'Плитка',
   FEED: 'Лента',
-  ADD: 'Добавление',
+  ADD: 'Черновик',
   LOGIN: 'Вход',
 }
 export const LOGOUT_LABEL = 'Выход'

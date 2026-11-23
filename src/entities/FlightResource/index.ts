@@ -8,6 +8,8 @@ export {
   likeFlightResource,
   deleteFlightResource,
   createFlightResource,
+  loadFlightDraft,
+  publishFlightDraft,
   setPriceFilter,
   resetPriceFilter,
   clearError,

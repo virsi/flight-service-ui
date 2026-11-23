@@ -3,7 +3,7 @@ import { type FC, type FormEvent, useEffect, useMemo, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/store'
-import { type NewFlightResource, createFlightResource } from '../../entities/FlightResource'
+import { type FlightResource, type NewFlightResource, createFlightResource, loadFlightDraft, publishFlightDraft } from '../../entities/FlightResource'
 import { DEFAULT_IMAGE, DEFAULT_VIDEO } from '../../shared/config/media'
 import { ROUTES } from '../../shared/config/routes'
 
@@ -19,8 +19,6 @@ const useFilePreview = (file?: File) => {
   return url
 }
 
-// Добавление услуги (только для авторизованного): изображение и видео с выбором файла под каждым,
-// затем поля услуги и кнопка «Добавить»
 export const AddFlightResourcePage: FC = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -37,17 +35,30 @@ export const AddFlightResourcePage: FC = () => {
   const imagePreview = useFilePreview(image)
   const videoPreview = useFilePreview(video)
 
+  const [draft, setDraft] = useState<FlightResource | null>()
+  useEffect(() => {
+    let active = true
+    if (isAuthenticated) dispatch(loadFlightDraft()).unwrap().then((value) => {
+      if (active) setDraft(value)
+    }).catch(() => {})
+    return () => { active = false }
+  }, [dispatch, isAuthenticated])
+
   if (!isAuthenticated) return <Navigate to={ROUTES.LOGIN} replace />
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
+    if (draft) {
+      dispatch(publishFlightDraft()).unwrap().then(() => navigate(ROUTES.TILES)).catch(() => {})
+      return
+    }
     const newResource: NewFlightResource = { name, description, unit, price: Number(price) }
     // необязательные файлы отправляем, только если выбраны
     if (image) newResource.image = image
     if (video) newResource.video = video
     dispatch(createFlightResource(newResource))
       .unwrap()
-      .then(() => navigate(ROUTES.TILES))
+      .then(setDraft)
       .catch(() => {}) // текст ошибки уже в store, его показывает AppLayout
   }
 
@@ -55,10 +66,14 @@ export const AddFlightResourcePage: FC = () => {
     <div className="addPage">
       <header className="header">
         <h1>Обслуживание рейса</h1>
-        <p className="subtitle">Новая услуга</p>
+        <p className="subtitle">{draft ? 'Черновик услуги' : 'Подготовка черновика'}</p>
       </header>
 
-      <Form className="addForm" onSubmit={handleSubmit}>
+      {draft !== undefined && <Form className="addForm" onSubmit={handleSubmit}>
+        {draft ? <section>
+          <h2>{draft.name}</h2><p>{draft.description}</p>
+          <p>{draft.price} ₽/{draft.unit}</p><p>Статус — {draft.status}</p>
+        </section> : <>
         <img className="addPreview" src={imagePreview || DEFAULT_IMAGE} alt="Изображение услуги" />
         <Form.Group className="mb-3" controlId="image">
           <Form.Label>Выбрать изображение</Form.Label>
@@ -123,10 +138,11 @@ export const AddFlightResourcePage: FC = () => {
             required
           />
         </Form.Group>
+        </>}
         <Button type="submit" className="w-100" disabled={loading}>
-          Добавить
+          {draft ? 'Опубликовать' : 'Сохранить черновик'}
         </Button>
-      </Form>
+      </Form>}
     </div>
   )
 }
