@@ -1,6 +1,5 @@
 import './FlightResourcesPage.css'
 import { type FC, useEffect } from 'react'
-import { Col, Row } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/store'
 import {
@@ -48,17 +47,16 @@ export const FlightResourcesPage: FC = () => {
       {!list.length && !loading ? (
         <p className="empty">К сожалению, ничего не найдено</p>
       ) : (
-        <Row className="grid g-3">
+        <div className="resourceGrid">
           {list.map((item) => (
-            <Col xs={6} md={4} lg={3} key={item.id}>
-              <FlightResourceCard
-                {...item}
-                onClick={() => navigate(`${ROUTES.FEED}/${item.id}`)}
-                onDelete={getDeleteHandler(item)}
-              />
-            </Col>
+            <FlightResourceCard
+              key={item.id}
+              {...item}
+              onClick={() => navigate(`${ROUTES.FEED}/${item.id}`)}
+              onDelete={getDeleteHandler(item)}
+            />
           ))}
-        </Row>
+        </div>
       )}
     </div>
   )
